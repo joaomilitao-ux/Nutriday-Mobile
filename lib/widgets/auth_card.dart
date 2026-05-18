@@ -63,10 +63,14 @@ class AuthCard extends StatelessWidget {
           ],
           const SizedBox(height: 32),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+            ),
             onPressed: () {},
             child: Text(
               buttonText,
               style: const TextStyle(
+                color: Colors.white,
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),
