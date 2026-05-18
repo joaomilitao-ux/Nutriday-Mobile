@@ -1,17 +1,34 @@
-# nutriday
+# Nutriday-Mobile
 
-A new Flutter project.
+# Divisão de Tarefas — Nutriday
 
-## Getting Started
+## Informações Gerais
 
-This project is a starting point for a Flutter application.
+| Campo | Detalhe |
+|---|---|
+| Projeto | Nutriday |
+| Disciplina | Dispositivos Móveis |
+| Período | 11/05 a 18/06 |
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Tabela de Tarefas
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+| # | Tarefa | Responsável | Status | Prazo | Observações |
+|---|---|---|---|---|---|
+| 1 | Tela de Login, Tela de Cadastro, Tela de Objetivo, Tela de Dados Físicos, Tela de Informações Pessoais e Tela de Nível de Atividade | João Miguel | 🔵 | 18/06 | Responsável pelo fluxo inicial do usuário no app |
+| 2 | Tela de perfil e Registro de refeições | Clara Helena | 🔵 | 18/06 | Responsável por desenvolver tela de perfil e registro de refeições |
+| 3 | Tela de refeiçoes e lista de compras | Mariana | 🔵 | 18/06 | Responsavel por desenvolver tela de refeiçao e lista de compras |
+| 4 | Tela Home e Histórico | João Vitor | 🔵 | 18/06 | Responsável pela tela Home e pelo Histórico do Usuário |
+| 5 |  | Allan | 🔵 |  |  |
+
+---
+
+## Legenda de Status
+
+| Ícone | Significado |
+|---|---|
+| 🔵 | A fazer |
+| 🟡 | Em andamento |
+| 🟢 | Concluído |
+| 🔴 | Bloqueado |
