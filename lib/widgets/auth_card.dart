@@ -6,12 +6,14 @@ class AuthCard extends StatelessWidget {
   final String title;
   final String buttonText;
   final bool showConfirmPassword;
+  final VoidCallback? onSubmit;
 
   const AuthCard({
     super.key,
     required this.title,
     required this.buttonText,
     required this.showConfirmPassword,
+    this.onSubmit,
   });
 
   @override
@@ -50,14 +52,14 @@ class AuthCard extends StatelessWidget {
           const SizedBox(height: 16),
           const InputField(
             label: 'Senha',
-            hint: '••••••••',
+            hint: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022',
             obscureText: true,
           ),
           if (showConfirmPassword) ...[
             const SizedBox(height: 16),
             const InputField(
               label: 'Confirmar Senha',
-              hint: '••••••••',
+              hint: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022',
               obscureText: true,
             ),
           ],
@@ -66,7 +68,7 @@ class AuthCard extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
             ),
-            onPressed: () {},
+            onPressed: onSubmit ?? () {},
             child: Text(
               buttonText,
               style: const TextStyle(

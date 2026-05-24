@@ -34,7 +34,7 @@ class LoginPage extends StatelessWidget {
                       ),
                     );
                   },
-                  child: const Text('Não tem conta? Criar agora'),
+                  child: const Text('N\u00E3o tem conta? Criar agora'),
                 ),
               ],
             ),
