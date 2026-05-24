@@ -221,7 +221,7 @@ class _OnboardingQuestionsPageState extends State<OnboardingQuestionsPage> {
               _SelectionCard(
                 title: 'Emagrecer',
                 subtitle: 'Perder peso de forma saud\u00E1vel',
-                leading: '🍎',
+                leading: '🎯',
                 selected: _selectedGoal == 'emagrecer',
                 onTap: () {
                   setState(() {
