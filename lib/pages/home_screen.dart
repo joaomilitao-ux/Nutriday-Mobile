@@ -1,0 +1,407 @@
+import 'package:flutter/material.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 20),
+                    _buildHeader(),
+                    const SizedBox(height: 16),
+                    _buildLunchBanner(),
+                    const SizedBox(height: 20),
+                    _buildDailySummary(),
+                    const SizedBox(height: 16),
+                    _buildMacros(),
+                    const SizedBox(height: 16),
+                    _buildWaterIntake(),
+                    const SizedBox(height: 20),
+                    _buildRegisterButton(),
+                    const SizedBox(height: 24),
+                    _buildTodayMeals(),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: const [
+                Text(
+                  'Boa tarde ',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1A1A1A),
+                  ),
+                ),
+                Text('🌿', style: TextStyle(fontSize: 20)),
+              ],
+            ),
+            const SizedBox(height: 2),
+            const Text(
+              'Segunda-feira, 7 de Abril',
+              style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
+            ),
+          ],
+        ),
+        CircleAvatar(
+          radius: 22,
+          backgroundColor: const Color(0xFFDDEEDD),
+          child: ClipOval(
+            child: Container(
+              width: 44,
+              height: 44,
+              color: const Color(0xFFB0C4B1),
+              child: const Icon(Icons.person, color: Colors.white, size: 28),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLunchBanner() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE8F5E9),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.3)),
+      ),
+      child: Row(
+        children: const [
+          Text('🥗', style: TextStyle(fontSize: 18)),
+          SizedBox(width: 8),
+          Text(
+            'Hora do almoço — mantenha o equilíbrio!',
+            style: TextStyle(
+              color: Color(0xFF2E7D32),
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDailySummary() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Resumo do dia',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1A1A1A),
+            ),
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Calorias consumidas',
+            style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
+          ),
+          const SizedBox(height: 6),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: const [
+              Text(
+                '1050',
+                style: TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 6, left: 4),
+                child: Text(
+                  '/ 2000',
+                  style: TextStyle(fontSize: 16, color: Color(0xFF888888)),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: 1050 / 2000,
+              minHeight: 8,
+              backgroundColor: const Color(0xFFE0E0E0),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                '53% da meta diária',
+                style: TextStyle(fontSize: 12, color: Color(0xFF888888)),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF9C4),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  '950 kcal restantes',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFFF57F17),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMacros() {
+    return Row(
+      children: [
+        _macroCard('🥩', 'Proteína', '68g', const Color(0xFFFFEBEE), const Color(0xFFE53935)),
+        const SizedBox(width: 10),
+        _macroCard('🌾', 'Carbo', '95g', const Color(0xFFFFFDE7), const Color(0xFFFFA000)),
+        const SizedBox(width: 10),
+        _macroCard('🧈', 'Gordura', '35g', const Color(0xFFFFEBEE), const Color(0xFFE53935)),
+      ],
+    );
+  }
+
+  Widget _macroCard(String emoji, String label, String value, Color bg, Color accent) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border(top: BorderSide(color: accent, width: 3)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(emoji, style: const TextStyle(fontSize: 22)),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF888888)),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWaterIntake() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: const [
+              Text('💧', style: TextStyle(fontSize: 20)),
+              SizedBox(width: 8),
+              Text(
+                'Consumo de água',
+                style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            '6 / 8 copos',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1A1A1A),
+            ),
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: LinearProgressIndicator(
+              value: 6 / 8,
+              minHeight: 8,
+              backgroundColor: const Color(0xFFE3F2FD),
+              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1E88E5)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRegisterButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFF4CAF50),
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          elevation: 0,
+        ),
+        child: const Text(
+          '+ Registrar refeição',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTodayMeals() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Refeições de Hoje',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A1A1A),
+          ),
+        ),
+        const SizedBox(height: 12),
+        _mealItem('☕', 'Café da Manhã', '08:30', 'Ovos, pão integral, café', 350),
+      ],
+    );
+  }
+
+  Widget _mealItem(String emoji, String name, String time, String description, int kcal) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFF8E1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Center(child: Text(emoji, style: const TextStyle(fontSize: 22))),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Color(0xFF1A1A1A),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(time, style: const TextStyle(fontSize: 12, color: Color(0xFF888888))),
+                const SizedBox(height: 2),
+                Text(
+                  description,
+                  style: const TextStyle(fontSize: 12, color: Color(0xFF888888)),
+                ),
+              ],
+            ),
+          ),
+          Text(
+            '$kcal kcal',
+            style: const TextStyle(
+              color: Color(0xFF4CAF50),
+              fontWeight: FontWeight.w600,
+              fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
