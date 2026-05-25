@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nutriday/app_session.dart';
-import 'package:nutriday/models/user_profile.dart';
-import 'package:nutriday/pages/perfil_screen.dart';
+import 'package:nutriday/app_routes.dart';
 import 'package:nutriday/theme.dart';
 
 class OnboardingQuestionsPage extends StatefulWidget {
-  final String email;
-
-  const OnboardingQuestionsPage({
-    super.key,
-    required this.email,
-  });
+  const OnboardingQuestionsPage({super.key});
 
   @override
   State<OnboardingQuestionsPage> createState() =>
@@ -99,25 +92,13 @@ class _OnboardingQuestionsPageState extends State<OnboardingQuestionsPage> {
   }
 
   Future<void> _showCompletionDialog() async {
-    final profile = UserProfile(
-      email: widget.email,
-      goal: _goalLabel(),
-      age: _ageController.text.trim(),
-      weight: _weightController.text.trim(),
-      height: _heightController.text.trim(),
-      gender: _genderLabel(),
-      activityLevel: _activityLevelLabel(),
-    );
-
-    AppSession.saveRegisteredProfile(profile);
-
     await showDialog<void>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: const Text('Cadastro conclu\u00EDdo'),
           content: const Text(
-            'Suas respostas foram registradas. Voc\u00EA voltar\u00E1 para o login.',
+            'Suas respostas foram registradas. Voc\u00EA ser\u00E1 direcionado para o in\u00EDcio.',
           ),
           actions: [
             TextButton(
@@ -135,48 +116,9 @@ class _OnboardingQuestionsPageState extends State<OnboardingQuestionsPage> {
       return;
     }
 
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => PerfilScreen(profile: profile),
-      ),
-    );
-  }
-
-  String _goalLabel() {
-    switch (_selectedGoal) {
-      case 'emagrecer':
-        return 'Emagrecer';
-      case 'ganhar_massa':
-        return 'Ganhar massa';
-      case 'manter_peso':
-        return 'Manter peso';
-      default:
-        return 'Manter hábitos saudáveis';
-    }
-  }
-
-  String _genderLabel() {
-    switch (_selectedGender) {
-      case 'masculino':
-        return 'Masculino';
-      case 'feminino':
-        return 'Feminino';
-      default:
-        return 'Não informado';
-    }
-  }
-
-  String _activityLevelLabel() {
-    switch (_selectedActivityLevel) {
-      case 'sedentario':
-        return 'Sedentário';
-      case 'moderado':
-        return 'Moderado';
-      case 'ativo':
-        return 'Ativo';
-      default:
-        return 'Não informado';
-    }
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(AppRoutes.inicio, (route) => false);
   }
 
   @override

@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:nutriday/models/user_profile.dart';
-import 'package:nutriday/pages/login_page.dart';
+import 'package:nutriday/app_routes.dart';
+import 'package:nutriday/app_session.dart';
+import 'package:nutriday/widgets/app_bottom_navigation_bar.dart';
 
 class PerfilScreen extends StatefulWidget {
-  final UserProfile? profile;
-
-  const PerfilScreen({
-    super.key,
-    this.profile,
-  });
+  const PerfilScreen({super.key});
 
   @override
   State<PerfilScreen> createState() => _PerfilScreenState();
@@ -21,9 +17,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
   int _abaSelecionada = 4;
 
   static const Color _verde = Color(0xFF4CAF50);
-
-  UserProfile get _profile =>
-      widget.profile ?? UserProfile.guest(email: 'seu@email.com');
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +47,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
           const SizedBox(height: 16),
         ],
       ),
-      bottomNavigationBar: _barraNavegacao(),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 4),
     );
   }
 
@@ -72,21 +65,21 @@ class _PerfilScreenState extends State<PerfilScreen> {
             child: Icon(Icons.person, size: 40, color: Colors.grey[500]),
           ),
           const SizedBox(width: 16),
-          Column(
+          const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _profile.displayName,
-                style: const TextStyle(
+                'Seu Nome',
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: 4),
               Text(
-                _profile.email,
-                style: const TextStyle(fontSize: 14, color: _verde),
+                'seu@email.com',
+                style: TextStyle(fontSize: 14, color: _verde),
               ),
             ],
           ),
@@ -106,7 +99,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
             icone: Icons.person_outline,
             corIcone: _verde,
             titulo: 'Dados Pessoais',
-            subtitulo: _profile.personalSummary,
+            subtitulo: 'Idade, peso, altura',
             onTap: () {},
           ),
           const Divider(height: 1, indent: 56),
@@ -114,7 +107,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
             icone: Icons.track_changes_outlined,
             corIcone: const Color(0xFF42A5F5),
             titulo: 'Meu Objetivo',
-            subtitulo: _profile.goal,
+            subtitulo: 'Ganhar massa muscular',
             onTap: () {},
           ),
         ],
@@ -204,10 +197,10 @@ class _PerfilScreenState extends State<PerfilScreen> {
   Widget _botaoSairDaConta() {
     return OutlinedButton.icon(
       onPressed: () {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const LoginPage(),
-          ),
+        AppSession.clear();
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.login,
           (route) => false,
         );
       },
@@ -226,6 +219,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   // ─── Barra de navegação inferior ─────────────────────────────────────────
 
+  // ignore: unused_element
   Widget _barraNavegacao() {
     return BottomNavigationBar(
       currentIndex: _abaSelecionada,
@@ -236,11 +230,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
       selectedFontSize: 12,
       unselectedFontSize: 12,
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Início'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined), label: 'Início'),
         BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histórico'),
-        BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: 'Sugestões'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: 'Compras'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Perfil'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book_outlined), label: 'Sugestões'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag_outlined), label: 'Compras'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline), label: 'Perfil'),
       ],
     );
   }
@@ -260,7 +258,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
       leading: _circuloIcone(icone, corIcone),
       title: Text(titulo, style: const TextStyle(fontWeight: FontWeight.w500)),
       subtitle: Text(subtitulo, style: const TextStyle(fontSize: 12)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+      trailing:
+          const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
   }
@@ -278,11 +277,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
       leading: _circuloIcone(icone, corIcone),
       title: Text(titulo, style: const TextStyle(fontWeight: FontWeight.w500)),
       subtitle: Text(subtitulo, style: const TextStyle(fontSize: 12)),
-      trailing: Switch(
-        value: valor,
-        onChanged: onChanged,
-        activeThumbColor: _verde,
-      ),
+      trailing: Switch(value: valor, onChanged: onChanged, activeColor: _verde),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
   }
@@ -293,7 +288,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
       width: 38,
       height: 38,
       decoration: BoxDecoration(
-        color: cor.withValues(alpha: 0.12),
+        color: cor.withOpacity(0.12),
         shape: BoxShape.circle,
       ),
       child: Icon(icone, color: cor, size: 20),
@@ -306,7 +301,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: 0.05),
+          color: Colors.black.withOpacity(0.05),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutriday/pages/onboarding_questions_page.dart';
+import 'package:nutriday/app_routes.dart';
 import 'package:nutriday/widgets/auth_card.dart';
 import 'package:nutriday/widgets/nutriday_header.dart';
 
@@ -23,14 +23,8 @@ class RegisterPage extends StatelessWidget {
                   title: 'Cadastro',
                   buttonText: 'Criar Conta',
                   showConfirmPassword: true,
-                  onSubmit: (email, password) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            OnboardingQuestionsPage(email: email),
-                      ),
-                    );
+                  onSubmit: () {
+                    Navigator.pushNamed(context, AppRoutes.onboarding);
                   },
                 ),
                 const SizedBox(height: 16),

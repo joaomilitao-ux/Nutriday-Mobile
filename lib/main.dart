@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutriday/pages/login_page.dart';
+import 'package:nutriday/app_routes.dart';
 import 'package:nutriday/theme.dart';
 
 void main() {
@@ -15,7 +15,8 @@ class NutridayApp extends StatelessWidget {
       title: 'NutriDay',
       theme: AppTheme.theme,
       debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
+      initialRoute: AppRoutes.login,
+      routes: AppRoutes.routes,
     );
   }
 }

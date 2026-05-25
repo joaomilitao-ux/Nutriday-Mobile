@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:nutriday/theme.dart';
 import 'package:nutriday/widgets/input_field.dart';
 
-typedef AuthSubmitCallback = void Function(String email, String password);
-
 class AuthCard extends StatefulWidget {
   final String title;
   final String buttonText;
   final bool showConfirmPassword;
-  final AuthSubmitCallback? onSubmit;
+  final VoidCallback? onSubmit;
 
   const AuthCard({
     super.key,
@@ -27,6 +25,7 @@ class _AuthCardState extends State<AuthCard> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  bool _submitted = false;
 
   @override
   void dispose() {
@@ -37,54 +36,53 @@ class _AuthCardState extends State<AuthCard> {
   }
 
   void _handleSubmit() {
-    if (!_formKey.currentState!.validate()) {
+    setState(() {
+      _submitted = true;
+    });
+
+    final isValid = _formKey.currentState?.validate() ?? false;
+    if (!isValid) {
       return;
     }
 
-    widget.onSubmit?.call(
-      _emailController.text.trim(),
-      _passwordController.text.trim(),
-    );
+    widget.onSubmit?.call();
   }
 
   String? _validateEmail(String? value) {
     final email = value?.trim() ?? '';
-
     if (email.isEmpty) {
-      return 'Informe seu email';
+      return 'Informe seu e-mail.';
     }
 
-    final emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
-    if (!emailPattern.hasMatch(email)) {
-      return 'Informe um email válido';
+    const emailPattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$';
+    if (!RegExp(emailPattern).hasMatch(email)) {
+      return 'Informe um e-mail valido.';
     }
 
     return null;
   }
 
   String? _validatePassword(String? value) {
-    final password = value?.trim() ?? '';
-
+    final password = value ?? '';
     if (password.isEmpty) {
-      return 'Informe sua senha';
+      return 'Informe sua senha.';
     }
 
     if (password.length < 6) {
-      return 'A senha deve ter pelo menos 6 caracteres';
+      return 'A senha deve ter pelo menos 6 caracteres.';
     }
 
     return null;
   }
 
   String? _validateConfirmPassword(String? value) {
-    final confirmPassword = value?.trim() ?? '';
-
+    final confirmPassword = value ?? '';
     if (confirmPassword.isEmpty) {
-      return 'Confirme sua senha';
+      return 'Confirme sua senha.';
     }
 
-    if (confirmPassword != _passwordController.text.trim()) {
-      return 'As senhas não coincidem';
+    if (confirmPassword != _passwordController.text) {
+      return 'As senhas nao coincidem.';
     }
 
     return null;
@@ -108,6 +106,9 @@ class _AuthCardState extends State<AuthCard> {
       ),
       child: Form(
         key: _formKey,
+        autovalidateMode: _submitted
+            ? AutovalidateMode.onUserInteraction
+            : AutovalidateMode.disabled,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -119,14 +120,13 @@ class _AuthCardState extends State<AuthCard> {
                 color: AppTheme.textPrimary,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             InputField(
               label: 'Email',
               hint: 'seu@email.com',
               obscureText: false,
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
               validator: _validateEmail,
             ),
             const SizedBox(height: 16),
@@ -135,10 +135,6 @@ class _AuthCardState extends State<AuthCard> {
               hint: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022',
               obscureText: true,
               controller: _passwordController,
-              keyboardType: TextInputType.visiblePassword,
-              textInputAction: widget.showConfirmPassword
-                  ? TextInputAction.next
-                  : TextInputAction.done,
               validator: _validatePassword,
             ),
             if (widget.showConfirmPassword) ...[
@@ -148,8 +144,6 @@ class _AuthCardState extends State<AuthCard> {
                 hint: '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022',
                 obscureText: true,
                 controller: _confirmPasswordController,
-                keyboardType: TextInputType.visiblePassword,
-                textInputAction: TextInputAction.done,
                 validator: _validateConfirmPassword,
               ),
             ],

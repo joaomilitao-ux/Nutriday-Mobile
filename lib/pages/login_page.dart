@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutriday/app_session.dart';
-import 'package:nutriday/pages/perfil_screen.dart';
-import 'package:nutriday/pages/register_page.dart';
+import 'package:nutriday/app_routes.dart';
 import 'package:nutriday/widgets/auth_card.dart';
 import 'package:nutriday/widgets/nutriday_header.dart';
 
@@ -25,25 +23,14 @@ class LoginPage extends StatelessWidget {
                   title: 'Login',
                   buttonText: 'Entrar',
                   showConfirmPassword: false,
-                  onSubmit: (email, password) {
-                    final profile = AppSession.resolveProfileForLogin(email);
-
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => PerfilScreen(profile: profile),
-                      ),
-                    );
+                  onSubmit: () {
+                    Navigator.pushReplacementNamed(context, AppRoutes.inicio);
                   },
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterPage(),
-                      ),
-                    );
+                    Navigator.pushNamed(context, AppRoutes.register);
                   },
                   child: const Text('N\u00E3o tem conta? Criar agora'),
                 ),
