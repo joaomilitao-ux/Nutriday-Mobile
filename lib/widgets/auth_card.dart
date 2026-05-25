@@ -54,6 +54,10 @@ class _AuthCardState extends State<AuthCard> {
       return 'Informe seu e-mail.';
     }
 
+    if (!widget.showConfirmPassword) {
+      return null;
+    }
+
     const emailPattern = r'^[^\s@]+@[^\s@]+\.[^\s@]+$';
     if (!RegExp(emailPattern).hasMatch(email)) {
       return 'Informe um e-mail valido.';
@@ -66,6 +70,10 @@ class _AuthCardState extends State<AuthCard> {
     final password = value ?? '';
     if (password.isEmpty) {
       return 'Informe sua senha.';
+    }
+
+    if (!widget.showConfirmPassword) {
+      return null;
     }
 
     if (password.length < 6) {
