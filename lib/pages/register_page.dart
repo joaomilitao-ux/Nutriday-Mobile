@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutriday/pages/onboarding_questions_page.dart';
 import 'package:nutriday/widgets/auth_card.dart';
 import 'package:nutriday/widgets/nutriday_header.dart';
 
@@ -18,17 +19,26 @@ class RegisterPage extends StatelessWidget {
                 const SizedBox(height: 40),
                 const NutriDayHeader(),
                 const SizedBox(height: 28),
-                const AuthCard(
+                AuthCard(
                   title: 'Cadastro',
                   buttonText: 'Criar Conta',
                   showConfirmPassword: true,
+                  onSubmit: (email, password) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            OnboardingQuestionsPage(email: email),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Já tem uma conta? Entrar'),
+                  child: const Text('J\u00E1 tem uma conta? Entrar'),
                 ),
               ],
             ),

@@ -5,12 +5,20 @@ class InputField extends StatelessWidget {
   final String label;
   final String hint;
   final bool obscureText;
+  final TextEditingController controller;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
+  final String? Function(String?)? validator;
 
   const InputField({
     super.key,
     required this.label,
     required this.hint,
     required this.obscureText,
+    required this.controller,
+    required this.keyboardType,
+    required this.textInputAction,
+    this.validator,
   });
 
   @override
@@ -26,8 +34,12 @@ class InputField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        TextField(
+        TextFormField(
+          controller: controller,
           obscureText: obscureText,
+          keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          validator: validator,
           decoration: InputDecoration(
             hintText: hint,
             filled: true,
