@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutriday/widgets/app_bottom_navigation_bar.dart';
 
 // ─── Modelo de dados ──────────────────────────────────────────────────────────
 
@@ -94,7 +95,7 @@ class _SugestoesScreenState extends State<SugestoesScreen> {
           ..._sugestoes.map(_cardSugestao),
         ],
       ),
-      bottomNavigationBar: _barraNavegacao(),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
     );
   }
 
@@ -278,6 +279,7 @@ class _SugestoesScreenState extends State<SugestoesScreen> {
 
   // ─── Barra de navegação inferior ──────────────────────────────────────────
 
+  // ignore: unused_element
   Widget _barraNavegacao() {
     return BottomNavigationBar(
       currentIndex: _abaSelecionada,
@@ -290,8 +292,7 @@ class _SugestoesScreenState extends State<SugestoesScreen> {
       items: const [
         BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined), label: 'Início'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.history), label: 'Histórico'),
+        BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histórico'),
         BottomNavigationBarItem(
             icon: Icon(Icons.menu_book_outlined), label: 'Sugestões'),
         BottomNavigationBarItem(

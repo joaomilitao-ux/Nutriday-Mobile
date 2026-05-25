@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nutriday/app_routes.dart';
+import 'package:nutriday/app_session.dart';
+import 'package:nutriday/widgets/app_bottom_navigation_bar.dart';
 
 class PerfilScreen extends StatefulWidget {
   const PerfilScreen({super.key});
@@ -44,7 +47,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
           const SizedBox(height: 16),
         ],
       ),
-      bottomNavigationBar: _barraNavegacao(),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 4),
     );
   }
 
@@ -193,7 +196,14 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   Widget _botaoSairDaConta() {
     return OutlinedButton.icon(
-      onPressed: () {},
+      onPressed: () {
+        AppSession.clear();
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          AppRoutes.login,
+          (route) => false,
+        );
+      },
       icon: const Icon(Icons.logout, color: Colors.redAccent),
       label: const Text(
         'Sair da Conta',
@@ -209,6 +219,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   // ─── Barra de navegação inferior ─────────────────────────────────────────
 
+  // ignore: unused_element
   Widget _barraNavegacao() {
     return BottomNavigationBar(
       currentIndex: _abaSelecionada,
@@ -219,11 +230,15 @@ class _PerfilScreenState extends State<PerfilScreen> {
       selectedFontSize: 12,
       unselectedFontSize: 12,
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: 'Início'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.home_outlined), label: 'Início'),
         BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histórico'),
-        BottomNavigationBarItem(icon: Icon(Icons.menu_book_outlined), label: 'Sugestões'),
-        BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: 'Compras'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Perfil'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book_outlined), label: 'Sugestões'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_bag_outlined), label: 'Compras'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline), label: 'Perfil'),
       ],
     );
   }
@@ -243,7 +258,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
       leading: _circuloIcone(icone, corIcone),
       title: Text(titulo, style: const TextStyle(fontWeight: FontWeight.w500)),
       subtitle: Text(subtitulo, style: const TextStyle(fontSize: 12)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+      trailing:
+          const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
   }

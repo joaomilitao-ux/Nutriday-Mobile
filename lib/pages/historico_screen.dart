@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutriday/widgets/app_bottom_navigation_bar.dart';
 
 class HistoricoScreen extends StatefulWidget {
   const HistoricoScreen({super.key});
@@ -33,24 +34,24 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
                     _buildDaySummaryCard(),
                     const SizedBox(height: 16),
                     _buildMealSection(
-                      title: 'Café da Manhã',
+                      title: 'Caf\u00e9 da Manh\u00e3',
                       time: '08:30',
                       totalKcal: 350,
                       items: const [
                         _FoodItem('Ovos mexidos', 180),
-                        _FoodItem('Pão integral', 120),
-                        _FoodItem('Café com leite', 50),
+                        _FoodItem('P\u00e3o integral', 120),
+                        _FoodItem('Caf\u00e9 com leite', 50),
                       ],
                     ),
                     const SizedBox(height: 12),
                     _buildMealSection(
-                      title: 'Almoço',
+                      title: 'Almo\u00e7o',
                       time: '12:45',
                       totalKcal: 520,
                       items: const [
                         _FoodItem('Frango grelhado', 250),
                         _FoodItem('Arroz integral', 200),
-                        _FoodItem('Feijão', 70),
+                        _FoodItem('Feij\u00e3o', 70),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -71,6 +72,7 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 1),
     );
   }
 
@@ -79,7 +81,7 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          'Histórico',
+          'Hist\u00f3rico',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -118,8 +120,16 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
       padding: const EdgeInsets.all(4),
       child: Row(
         children: [
-          _toggleButton('Dia', _isDayView, () => setState(() => _isDayView = true)),
-          _toggleButton('Semana', !_isDayView, () => setState(() => _isDayView = false)),
+          _toggleButton(
+            'Dia',
+            _isDayView,
+            () => setState(() => _isDayView = true),
+          ),
+          _toggleButton(
+            'Semana',
+            !_isDayView,
+            () => setState(() => _isDayView = false),
+          ),
         ],
       ),
     );
@@ -136,7 +146,13 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
             color: selected ? Colors.white : Colors.transparent,
             borderRadius: BorderRadius.circular(9),
             boxShadow: selected
-                ? [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 4, offset: const Offset(0, 1))]
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ]
                 : [],
           ),
           child: Text(
@@ -144,7 +160,8 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-              color: selected ? const Color(0xFF1A1A1A) : const Color(0xFF888888),
+              color:
+                  selected ? const Color(0xFF1A1A1A) : const Color(0xFF888888),
               fontSize: 14,
             ),
           ),
@@ -178,13 +195,17 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
                 color: const Color(0xFFF5F5F5),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.chevron_left, color: Color(0xFF888888), size: 20),
+              child: const Icon(
+                Icons.chevron_left,
+                color: Color(0xFF888888),
+                size: 20,
+              ),
             ),
           ),
-          Column(
-            children: const [
+          const Column(
+            children: [
               Text(
-                '30 de Março, 2026',
+                '30 de Mar\u00e7o, 2026',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
@@ -206,7 +227,11 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
                 color: const Color(0xFFF5F5F5),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Icon(Icons.chevron_right, color: Color(0xFF888888), size: 20),
+              child: const Icon(
+                Icons.chevron_right,
+                color: Color(0xFF888888),
+                size: 20,
+              ),
             ),
           ),
         ],
@@ -244,7 +269,7 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
             children: [
               _summaryMacro('1050', 'Calorias', const Color(0xFF4CAF50)),
               _summaryDivider(),
-              _summaryMacro('68g', 'Proteínas', const Color(0xFFE53935)),
+              _summaryMacro('68g', 'Prote\u00ednas', const Color(0xFFE53935)),
               _summaryDivider(),
               _summaryMacro('95g', 'Carboidratos', const Color(0xFF1E88E5)),
             ],
@@ -320,7 +345,10 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
                     const SizedBox(height: 2),
                     Text(
                       time,
-                      style: const TextStyle(fontSize: 12, color: Color(0xFF888888)),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF888888),
+                      ),
                     ),
                   ],
                 ),
@@ -365,5 +393,6 @@ class _HistoricoScreenState extends State<HistoricoScreen> {
 class _FoodItem {
   final String name;
   final int kcal;
+
   const _FoodItem(this.name, this.kcal);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutriday/app_routes.dart';
 import 'package:nutriday/theme.dart';
 
 class OnboardingQuestionsPage extends StatefulWidget {
@@ -97,7 +98,7 @@ class _OnboardingQuestionsPageState extends State<OnboardingQuestionsPage> {
         return AlertDialog(
           title: const Text('Cadastro conclu\u00EDdo'),
           content: const Text(
-            'Suas respostas foram registradas. Voc\u00EA voltar\u00E1 para o login.',
+            'Suas respostas foram registradas. Voc\u00EA ser\u00E1 direcionado para o in\u00EDcio.',
           ),
           actions: [
             TextButton(
@@ -115,7 +116,9 @@ class _OnboardingQuestionsPageState extends State<OnboardingQuestionsPage> {
       return;
     }
 
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    Navigator.of(
+      context,
+    ).pushNamedAndRemoveUntil(AppRoutes.inicio, (route) => false);
   }
 
   @override

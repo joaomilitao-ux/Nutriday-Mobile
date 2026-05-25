@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutriday/widgets/app_bottom_navigation_bar.dart';
 
 // ─── Modelos de dados ─────────────────────────────────────────────────────────
 
@@ -98,7 +99,8 @@ class _ComprasScreenState extends State<ComprasScreen> {
             ),
             const SizedBox(height: 12),
             StatefulBuilder(
-              builder: (context, setDialogState) => DropdownButtonFormField<String>(
+              builder: (context, setDialogState) =>
+                  DropdownButtonFormField<String>(
                 value: categoriaSelecionada,
                 decoration: const InputDecoration(labelText: 'Categoria'),
                 items: _categorias
@@ -132,8 +134,8 @@ class _ComprasScreenState extends State<ComprasScreen> {
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: _verde),
-            child: const Text('Adicionar',
-                style: TextStyle(color: Colors.white)),
+            child:
+                const Text('Adicionar', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -171,7 +173,7 @@ class _ComprasScreenState extends State<ComprasScreen> {
           const SizedBox(height: 16),
         ],
       ),
-      bottomNavigationBar: _barraNavegacao(),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 3),
     );
   }
 
@@ -274,8 +276,7 @@ class _ComprasScreenState extends State<ComprasScreen> {
               itemCount: categoria.itens.length,
               separatorBuilder: (_, __) =>
                   const Divider(height: 1, indent: 16, endIndent: 16),
-              itemBuilder: (context, indice) =>
-                  _linhaItem(categoria, indice),
+              itemBuilder: (context, indice) => _linhaItem(categoria, indice),
             ),
           ),
         ],
@@ -295,8 +296,7 @@ class _ComprasScreenState extends State<ComprasScreen> {
           value: item.marcado,
           activeColor: _verde,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-          onChanged: (valor) =>
-              setState(() => item.marcado = valor ?? false),
+          onChanged: (valor) => setState(() => item.marcado = valor ?? false),
         ),
 
         // Nome do item
@@ -306,8 +306,9 @@ class _ComprasScreenState extends State<ComprasScreen> {
             style: TextStyle(
               fontSize: 14,
               color: Colors.black87,
-              decoration:
-                  item.marcado ? TextDecoration.lineThrough : TextDecoration.none,
+              decoration: item.marcado
+                  ? TextDecoration.lineThrough
+                  : TextDecoration.none,
               decorationColor: Colors.black45,
             ),
           ),
@@ -315,7 +316,8 @@ class _ComprasScreenState extends State<ComprasScreen> {
 
         // Botão de deletar
         IconButton(
-          icon: const Icon(Icons.delete_outline, color: Colors.black38, size: 20),
+          icon:
+              const Icon(Icons.delete_outline, color: Colors.black38, size: 20),
           onPressed: () => _removerItem(categoria, indice),
           tooltip: 'Remover item',
         ),
@@ -325,6 +327,7 @@ class _ComprasScreenState extends State<ComprasScreen> {
 
   // ─── Barra de navegação inferior ──────────────────────────────────────────
 
+  // ignore: unused_element
   Widget _barraNavegacao() {
     return BottomNavigationBar(
       currentIndex: _abaSelecionada,
@@ -337,8 +340,7 @@ class _ComprasScreenState extends State<ComprasScreen> {
       items: const [
         BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined), label: 'Início'),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.history), label: 'Histórico'),
+        BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histórico'),
         BottomNavigationBarItem(
             icon: Icon(Icons.menu_book_outlined), label: 'Sugestões'),
         BottomNavigationBarItem(
