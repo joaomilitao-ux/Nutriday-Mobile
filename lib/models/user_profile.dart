@@ -30,18 +30,13 @@ class UserProfile {
   }
 
   String get displayName {
-    final source = email.contains('@') ? email.split('@').first : email;
-    final normalized = source.replaceAll(RegExp(r'[._-]+'), ' ').trim();
+    final username = usernameFromEmail(email);
 
-    if (normalized.isEmpty) {
+    if (username.isEmpty) {
       return 'Usuário Nutriday';
     }
 
-    return normalized
-        .split(RegExp(r'\s+'))
-        .where((word) => word.isNotEmpty)
-        .map(_capitalize)
-        .join(' ');
+    return username;
   }
 
   String get personalSummary {
@@ -150,8 +145,13 @@ class UserProfile {
     return (value / 10).ceil();
   }
 
-  static String _capitalize(String word) {
-    return '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}';
+  static String usernameFromEmail(String? email) {
+    final normalized = email?.trim().toLowerCase() ?? '';
+    if (normalized.isEmpty) {
+      return '';
+    }
+
+    return normalized.split('@').first.trim();
   }
 
   static double? _parseNumber(String input) {

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutriday/app_routes.dart';
+import 'package:nutriday/models/user_profile.dart';
 import 'package:nutriday/theme.dart';
 import 'package:nutriday/widgets/input_field.dart';
 import 'package:nutriday/widgets/nutriday_header.dart';
@@ -141,10 +142,12 @@ class _RegisterPageState extends State<RegisterPage> {
       throw const _AuthFlowException('Usuario autenticado sem e-mail valido.');
     }
 
+    final username = UserProfile.usernameFromEmail(email);
+
     await FirebaseFirestore.instance.collection('usuarios').doc(user.uid).set({
       'uid': user.uid,
       'email': email,
-      'usuario_logado': email,
+      'usuario_logado': username,
       'criado_por': email,
       'provedor': provider,
       'criado_em': FieldValue.serverTimestamp(),

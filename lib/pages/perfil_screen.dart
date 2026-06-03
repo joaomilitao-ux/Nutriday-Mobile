@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutriday/app_routes.dart';
 import 'package:nutriday/app_session.dart';
+import 'package:nutriday/models/user_profile.dart';
 import 'package:nutriday/widgets/app_bottom_navigation_bar.dart';
 
 class PerfilScreen extends StatefulWidget {
@@ -55,6 +56,11 @@ class _PerfilScreenState extends State<PerfilScreen> {
   // ─── Cabeçalho com foto, nome e e-mail ───────────────────────────────────
 
   Widget _secaoPerfil() {
+    final email = FirebaseAuth.instance.currentUser?.email?.trim() ?? '';
+    final username = UserProfile.usernameFromEmail(email);
+    final displayName = username.isEmpty ? 'Usuario' : username;
+    final displayEmail = email.isEmpty ? 'seu@email.com' : email;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: _decoracaoCard(),
@@ -66,21 +72,21 @@ class _PerfilScreenState extends State<PerfilScreen> {
             child: Icon(Icons.person, size: 40, color: Colors.grey[500]),
           ),
           const SizedBox(width: 16),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Seu Nome',
-                style: TextStyle(
+                displayName,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
-                'seu@email.com',
-                style: TextStyle(fontSize: 14, color: _verde),
+                displayEmail,
+                style: const TextStyle(fontSize: 14, color: _verde),
               ),
             ],
           ),
@@ -153,10 +159,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(label, style: const TextStyle(color: Colors.black54)),
-              Text(
-                valor,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
+              Text(valor, style: const TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
         ),
@@ -238,14 +241,22 @@ class _PerfilScreenState extends State<PerfilScreen> {
       unselectedFontSize: 12,
       items: const [
         BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined), label: 'Início'),
+          icon: Icon(Icons.home_outlined),
+          label: 'Início',
+        ),
         BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histórico'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book_outlined), label: 'Sugestões'),
+          icon: Icon(Icons.menu_book_outlined),
+          label: 'Sugestões',
+        ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag_outlined), label: 'Compras'),
+          icon: Icon(Icons.shopping_bag_outlined),
+          label: 'Compras',
+        ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline), label: 'Perfil'),
+          icon: Icon(Icons.person_outline),
+          label: 'Perfil',
+        ),
       ],
     );
   }
@@ -265,8 +276,11 @@ class _PerfilScreenState extends State<PerfilScreen> {
       leading: _circuloIcone(icone, corIcone),
       title: Text(titulo, style: const TextStyle(fontWeight: FontWeight.w500)),
       subtitle: Text(subtitulo, style: const TextStyle(fontSize: 12)),
-      trailing:
-          const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 14,
+        color: Colors.grey,
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
   }

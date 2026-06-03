@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutriday/app_routes.dart';
+import 'package:nutriday/models/user_profile.dart';
 import 'package:nutriday/widgets/app_bottom_navigation_bar.dart';
 
 class InicioScreen extends StatelessWidget {
@@ -45,27 +47,32 @@ class InicioScreen extends StatelessWidget {
   }
 
   Widget _buildHeader() {
+    final username = UserProfile.usernameFromEmail(
+      FirebaseAuth.instance.currentUser?.email,
+    );
+    final greetingName = username.isEmpty ? '' : '$username ';
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Row(
               children: [
                 Text(
-                  'Boa tarde ',
-                  style: TextStyle(
+                  'Boa tarde $greetingName',
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF1A1A1A),
                   ),
                 ),
-                Text('\u{1F33F}', style: TextStyle(fontSize: 20)),
+                const Text('\u{1F33F}', style: TextStyle(fontSize: 20)),
               ],
             ),
-            SizedBox(height: 2),
-            Text(
+            const SizedBox(height: 2),
+            const Text(
               'Segunda-feira, 7 de Abril',
               style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
             ),
@@ -94,9 +101,7 @@ class InicioScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFE8F5E9),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFF4CAF50).withOpacity(0.3),
-        ),
+        border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.3)),
       ),
       child: Row(
         children: const [
