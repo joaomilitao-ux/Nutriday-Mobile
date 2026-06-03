@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutriday/app_routes.dart';
 import 'package:nutriday/app_session.dart';
@@ -196,8 +197,14 @@ class _PerfilScreenState extends State<PerfilScreen> {
 
   Widget _botaoSairDaConta() {
     return OutlinedButton.icon(
-      onPressed: () {
+      onPressed: () async {
         AppSession.clear();
+        await FirebaseAuth.instance.signOut();
+
+        if (!mounted) {
+          return;
+        }
+
         Navigator.pushNamedAndRemoveUntil(
           context,
           AppRoutes.login,
