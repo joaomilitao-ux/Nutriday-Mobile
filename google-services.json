@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1067652500057",
+    "project_id": "nutriday-a61b5",
+    "storage_bucket": "nutriday-a61b5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067652500057:android:3206368ca373f5476b3f48",
+        "android_client_info": {
+          "package_name": "com.unit.Nutriday"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmDey9IuyNtb85Vu7e1-ePsuOYeJU6o94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

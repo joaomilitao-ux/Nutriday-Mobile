@@ -140,7 +140,7 @@ class _RegistrarRefeicaoScreenState extends State<RegistrarRefeicaoScreen> {
         _labelCampo('Tipo de Refeição'),
         const SizedBox(height: 6),
         DropdownButtonFormField<String>(
-          value: _tipoRefeicao,
+          initialValue: _tipoRefeicao,
           hint: const Text(
             'Selecione o tipo',
             style: TextStyle(color: Colors.black38, fontSize: 14),

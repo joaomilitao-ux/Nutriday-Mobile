@@ -2,10 +2,13 @@ name: nutriday
 description: Aplicativo simples de exemplo para NutriDay.
 publish_to: 'none'
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.9.0 <4.0.0'
 dependencies:
   flutter:
     sdk: flutter
+  cloud_firestore: ^5.6.12
+  firebase_auth: ^5.7.0
+  firebase_core: ^3.15.2
 
 dev_dependencies:
   flutter_test:
