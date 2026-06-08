@@ -146,10 +146,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
     await FirebaseFirestore.instance.collection('usuarios').doc(user.uid).set({
       'uid': user.uid,
+      'usuario_uid': user.uid,
       'email': email,
       'usuario_logado': username,
       'criado_por': email,
       'provedor': provider,
+      'onboarding_concluido': false,
       'criado_em': FieldValue.serverTimestamp(),
       'ultimo_login_em': FieldValue.serverTimestamp(),
       'atualizado_em': FieldValue.serverTimestamp(),

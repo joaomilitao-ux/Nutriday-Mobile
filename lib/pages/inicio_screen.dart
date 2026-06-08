@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutriday/app_routes.dart';
@@ -9,37 +10,48 @@ class InicioScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    _buildHeader(),
-                    const SizedBox(height: 16),
-                    _buildLunchBanner(),
-                    const SizedBox(height: 20),
-                    _buildDailySummary(),
-                    const SizedBox(height: 16),
-                    _buildMacros(),
-                    const SizedBox(height: 16),
-                    _buildWaterIntake(),
-                    const SizedBox(height: 20),
-                    _buildRegisterButton(context),
-                    const SizedBox(height: 24),
-                    _buildTodayMeals(),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: user == null
+              ? null
+              : FirebaseFirestore.instance
+                    .collection('usuarios')
+                    .doc(user.uid)
+                    .snapshots(),
+          builder: (context, snapshot) {
+            final profileData = snapshot.data?.data();
+            final profile = profileData == null
+                ? UserProfile.guest(email: user?.email ?? '')
+                : UserProfile.fromMap(profileData);
+
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20),
+                  _buildHeader(),
+                  const SizedBox(height: 16),
+                  _buildLunchBanner(),
+                  const SizedBox(height: 20),
+                  _buildDailySummary(profile),
+                  const SizedBox(height: 16),
+                  _buildMacros(profile),
+                  const SizedBox(height: 16),
+                  _buildWaterIntake(profile),
+                  const SizedBox(height: 20),
+                  _buildRegisterButton(context),
+                  const SizedBox(height: 24),
+                  _buildTodayMeals(),
+                  const SizedBox(height: 20),
+                ],
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
       bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
@@ -73,7 +85,7 @@ class InicioScreen extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             const Text(
-              'Segunda-feira, 7 de Abril',
+              'Resumo nutricional de hoje',
               style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
             ),
           ],
@@ -103,12 +115,12 @@ class InicioScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFF4CAF50).withOpacity(0.3)),
       ),
-      child: Row(
-        children: const [
+      child: const Row(
+        children: [
           Text('\u{1F957}', style: TextStyle(fontSize: 18)),
           SizedBox(width: 8),
           Text(
-            'Hora do almoço - mantenha o equilíbrio!',
+            'Hora do almoco - mantenha o equilibrio!',
             style: TextStyle(
               color: Color(0xFF2E7D32),
               fontSize: 14,
@@ -120,7 +132,13 @@ class InicioScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDailySummary() {
+  Widget _buildDailySummary(UserProfile profile) {
+    const consumedCalories = 1050;
+    final calorieGoal = profile.calorieGoal <= 0 ? 2000 : profile.calorieGoal;
+    final progress = (consumedCalories / calorieGoal).clamp(0.0, 1.0);
+    final percentage = (progress * 100).round();
+    final remaining = (calorieGoal - consumedCalories).clamp(0, calorieGoal);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -154,9 +172,9 @@ class InicioScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: const [
-              Text(
-                '1050',
+            children: [
+              const Text(
+                '$consumedCalories',
                 style: TextStyle(
                   fontSize: 34,
                   fontWeight: FontWeight.bold,
@@ -164,10 +182,13 @@ class InicioScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.only(bottom: 6, left: 4),
+                padding: const EdgeInsets.only(bottom: 6, left: 4),
                 child: Text(
-                  '/ 2000',
-                  style: TextStyle(fontSize: 16, color: Color(0xFF888888)),
+                  '/ $calorieGoal',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF888888),
+                  ),
                 ),
               ),
             ],
@@ -175,20 +196,22 @@ class InicioScreen extends StatelessWidget {
           const SizedBox(height: 10),
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
-            child: const LinearProgressIndicator(
-              value: 1050 / 2000,
+            child: LinearProgressIndicator(
+              value: progress,
               minHeight: 8,
-              backgroundColor: Color(0xFFE0E0E0),
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4CAF50)),
+              backgroundColor: const Color(0xFFE0E0E0),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF4CAF50),
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                '53% da meta diária',
-                style: TextStyle(fontSize: 12, color: Color(0xFF888888)),
+              Text(
+                '$percentage% da meta diaria',
+                style: const TextStyle(fontSize: 12, color: Color(0xFF888888)),
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -199,9 +222,9 @@ class InicioScreen extends StatelessWidget {
                   color: const Color(0xFFFFF9C4),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
-                  '950 kcal restantes',
-                  style: TextStyle(
+                child: Text(
+                  '$remaining kcal restantes',
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Color(0xFFF57F17),
                     fontWeight: FontWeight.w500,
@@ -210,18 +233,23 @@ class InicioScreen extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 8),
+          Text(
+            'Gasto diario estimado: ${profile.dailyEnergyExpenditure} kcal',
+            style: const TextStyle(fontSize: 12, color: Color(0xFF888888)),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildMacros() {
+  Widget _buildMacros(UserProfile profile) {
     return Row(
       children: [
         _macroCard(
           '\u{1F969}',
-          'Proteína',
-          '68g',
+          'Proteina',
+          '${profile.proteinGoalGrams}g',
           const Color(0xFFFFEBEE),
           const Color(0xFFE53935),
         ),
@@ -229,7 +257,7 @@ class InicioScreen extends StatelessWidget {
         _macroCard(
           '\u{1F33E}',
           'Carbo',
-          '95g',
+          '${profile.carbGoalGrams}g',
           const Color(0xFFFFFDE7),
           const Color(0xFFFFA000),
         ),
@@ -237,7 +265,7 @@ class InicioScreen extends StatelessWidget {
         _macroCard(
           '\u{1F9C8}',
           'Gordura',
-          '35g',
+          '${profile.fatGoalGrams}g',
           const Color(0xFFFFEBEE),
           const Color(0xFFE53935),
         ),
@@ -291,7 +319,10 @@ class InicioScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWaterIntake() {
+  Widget _buildWaterIntake(UserProfile profile) {
+    final waterGoal = profile.waterGoalCups;
+    final waterConsumed = waterGoal < 6 ? waterGoal : 6;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -308,34 +339,36 @@ class InicioScreen extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Row(
+        children: [
+          const Row(
             children: [
               Text('\u{1F4A7}', style: TextStyle(fontSize: 20)),
               SizedBox(width: 8),
               Text(
-                'Consumo de água',
+                'Consumo de agua',
                 style: TextStyle(fontSize: 13, color: Color(0xFF888888)),
               ),
             ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
-            '6 / 8 copos',
-            style: TextStyle(
+            '$waterConsumed / $waterGoal copos',
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Color(0xFF1A1A1A),
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(6)),
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
             child: LinearProgressIndicator(
-              value: 6 / 8,
+              value: waterConsumed / waterGoal,
               minHeight: 8,
-              backgroundColor: Color(0xFFE3F2FD),
-              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1E88E5)),
+              backgroundColor: const Color(0xFFE3F2FD),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF1E88E5),
+              ),
             ),
           ),
         ],
@@ -360,7 +393,7 @@ class InicioScreen extends StatelessWidget {
           elevation: 0,
         ),
         child: const Text(
-          '+ Registrar refeição',
+          '+ Registrar refeicao',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
@@ -372,7 +405,7 @@ class InicioScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Refeições de Hoje',
+          'Refeicoes de Hoje',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
@@ -382,9 +415,9 @@ class InicioScreen extends StatelessWidget {
         const SizedBox(height: 12),
         _mealItem(
           '\u2615',
-          'Café da Manhã',
+          'Cafe da Manha',
           '08:30',
-          'Ovos, pão integral, café',
+          'Ovos, pao integral, cafe',
           350,
         ),
       ],

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutriday/app_routes.dart';
@@ -15,18 +16,17 @@ class PerfilScreen extends StatefulWidget {
 class _PerfilScreenState extends State<PerfilScreen> {
   bool _notificacoesAtivas = true;
 
-  // Índice da aba ativa na barra de navegação inferior
-  int _abaSelecionada = 4;
-
   static const Color _verde = Color(0xFF4CAF50);
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
         title: const Text(
-          'Tela de Perfil',
+          'Perfil',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         backgroundColor: Colors.white,
@@ -34,32 +34,45 @@ class _PerfilScreenState extends State<PerfilScreen> {
         elevation: 0.5,
         centerTitle: false,
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        children: [
-          _secaoPerfil(),
-          const SizedBox(height: 16),
-          _secaoDadosPessoais(),
-          const SizedBox(height: 16),
-          _secaoMetasDiarias(),
-          const SizedBox(height: 16),
-          _secaoConfiguracoes(),
-          const SizedBox(height: 24),
-          _botaoSairDaConta(),
-          const SizedBox(height: 16),
-        ],
+      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: user == null
+            ? null
+            : FirebaseFirestore.instance
+                  .collection('usuarios')
+                  .doc(user.uid)
+                  .snapshots(),
+        builder: (context, snapshot) {
+          final profileData = snapshot.data?.data();
+          final profile = profileData == null
+              ? UserProfile.guest(email: user?.email ?? '')
+              : UserProfile.fromMap(profileData);
+
+          return ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            children: [
+              _secaoPerfil(profile),
+              const SizedBox(height: 16),
+              _secaoDadosPessoais(profile),
+              const SizedBox(height: 16),
+              _secaoMetasDiarias(profile),
+              const SizedBox(height: 16),
+              _secaoConfiguracoes(),
+              const SizedBox(height: 24),
+              _botaoSairDaConta(),
+              const SizedBox(height: 16),
+            ],
+          );
+        },
       ),
       bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 4),
     );
   }
 
-  // ─── Cabeçalho com foto, nome e e-mail ───────────────────────────────────
-
-  Widget _secaoPerfil() {
+  Widget _secaoPerfil(UserProfile profile) {
     final email = FirebaseAuth.instance.currentUser?.email?.trim() ?? '';
     final username = UserProfile.usernameFromEmail(email);
-    final displayName = username.isEmpty ? 'Usuario' : username;
-    final displayEmail = email.isEmpty ? 'seu@email.com' : email;
+    final displayName = username.isEmpty ? profile.displayName : username;
+    final displayEmail = email.isEmpty ? profile.email : email;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -72,32 +85,32 @@ class _PerfilScreenState extends State<PerfilScreen> {
             child: Icon(Icons.person, size: 40, color: Colors.grey[500]),
           ),
           const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                displayName,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  displayName,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                displayEmail,
-                style: const TextStyle(fontSize: 14, color: _verde),
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  displayEmail.isEmpty ? 'E-mail nao informado' : displayEmail,
+                  style: const TextStyle(fontSize: 14, color: _verde),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  // ─── Dados pessoais e objetivo ────────────────────────────────────────────
-
-  Widget _secaoDadosPessoais() {
+  Widget _secaoDadosPessoais(UserProfile profile) {
     return Container(
       decoration: _decoracaoCard(),
       child: Column(
@@ -105,16 +118,24 @@ class _PerfilScreenState extends State<PerfilScreen> {
           _itemMenu(
             icone: Icons.person_outline,
             corIcone: _verde,
-            titulo: 'Dados Pessoais',
-            subtitulo: 'Idade, peso, altura',
+            titulo: 'Dados pessoais',
+            subtitulo: profile.personalSummary,
             onTap: () {},
           ),
           const Divider(height: 1, indent: 56),
           _itemMenu(
             icone: Icons.track_changes_outlined,
             corIcone: const Color(0xFF42A5F5),
-            titulo: 'Meu Objetivo',
-            subtitulo: 'Ganhar massa muscular',
+            titulo: 'Meu objetivo',
+            subtitulo: _labelForGoal(profile.goal),
+            onTap: () {},
+          ),
+          const Divider(height: 1, indent: 56),
+          _itemMenu(
+            icone: Icons.monitor_heart_outlined,
+            corIcone: const Color(0xFFFFA726),
+            titulo: 'Nivel de atividade',
+            subtitulo: _labelForActivity(profile.activityLevel),
             onTap: () {},
           ),
         ],
@@ -122,9 +143,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
     );
   }
 
-  // ─── Metas diárias ────────────────────────────────────────────────────────
-
-  Widget _secaoMetasDiarias() {
+  Widget _secaoMetasDiarias(UserProfile profile) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: _decoracaoCard(),
@@ -132,15 +151,29 @@ class _PerfilScreenState extends State<PerfilScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Metas Diárias',
+            'Metas diarias',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          _linhaMetaDiaria('Calorias', '2000 kcal'),
-          _linhaMetaDiaria('Proteínas', '150g'),
-          _linhaMetaDiaria('Carboidratos', '200g'),
-          _linhaMetaDiaria('Gorduras', '65g'),
-          _linhaMetaDiaria('Água', '8 copos', mostrarDivisor: false),
+          _linhaMetaDiaria(
+            'Gasto diario',
+            '${profile.dailyEnergyExpenditure} kcal',
+          ),
+          _linhaMetaDiaria('Meta de calorias', '${profile.calorieGoal} kcal'),
+          _linhaMetaDiaria(
+            'Taxa basal',
+            profile.basalMetabolicRate <= 0
+                ? 'Nao calculada'
+                : '${profile.basalMetabolicRate} kcal',
+          ),
+          _linhaMetaDiaria('Proteinas', '${profile.proteinGoalGrams}g'),
+          _linhaMetaDiaria('Carboidratos', '${profile.carbGoalGrams}g'),
+          _linhaMetaDiaria('Gorduras', '${profile.fatGoalGrams}g'),
+          _linhaMetaDiaria(
+            'Agua',
+            '${profile.waterGoalCups} copos',
+            mostrarDivisor: false,
+          ),
         ],
       ),
     );
@@ -159,7 +192,13 @@ class _PerfilScreenState extends State<PerfilScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(label, style: const TextStyle(color: Colors.black54)),
-              Text(valor, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Flexible(
+                child: Text(
+                  valor,
+                  textAlign: TextAlign.end,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
           ),
         ),
@@ -167,8 +206,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
       ],
     );
   }
-
-  // ─── Notificações e ajuda ─────────────────────────────────────────────────
 
   Widget _secaoConfiguracoes() {
     return Container(
@@ -178,8 +215,8 @@ class _PerfilScreenState extends State<PerfilScreen> {
           _itemMenuSwitch(
             icone: Icons.notifications_outlined,
             corIcone: const Color(0xFFAB47BC),
-            titulo: 'Notificações',
-            subtitulo: 'Lembretes de refeições',
+            titulo: 'Notificacoes',
+            subtitulo: 'Lembretes de refeicoes',
             valor: _notificacoesAtivas,
             onChanged: (valor) => setState(() => _notificacoesAtivas = valor),
           ),
@@ -187,7 +224,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
           _itemMenu(
             icone: Icons.help_outline,
             corIcone: const Color(0xFFFFA726),
-            titulo: 'Ajuda e Suporte',
+            titulo: 'Ajuda e suporte',
             subtitulo: 'FAQ e contato',
             onTap: () {},
           ),
@@ -195,8 +232,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
       ),
     );
   }
-
-  // ─── Botão de sair ────────────────────────────────────────────────────────
 
   Widget _botaoSairDaConta() {
     return OutlinedButton.icon(
@@ -216,7 +251,7 @@ class _PerfilScreenState extends State<PerfilScreen> {
       },
       icon: const Icon(Icons.logout, color: Colors.redAccent),
       label: const Text(
-        'Sair da Conta',
+        'Sair da conta',
         style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w500),
       ),
       style: OutlinedButton.styleFrom(
@@ -227,43 +262,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
     );
   }
 
-  // ─── Barra de navegação inferior ─────────────────────────────────────────
-
-  // ignore: unused_element
-  Widget _barraNavegacao() {
-    return BottomNavigationBar(
-      currentIndex: _abaSelecionada,
-      onTap: (indice) => setState(() => _abaSelecionada = indice),
-      selectedItemColor: _verde,
-      unselectedItemColor: Colors.grey,
-      type: BottomNavigationBarType.fixed,
-      selectedFontSize: 12,
-      unselectedFontSize: 12,
-      items: const [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home_outlined),
-          label: 'Início',
-        ),
-        BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Histórico'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.menu_book_outlined),
-          label: 'Sugestões',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_bag_outlined),
-          label: 'Compras',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person_outline),
-          label: 'Perfil',
-        ),
-      ],
-    );
-  }
-
-  // ─── Helpers de layout ────────────────────────────────────────────────────
-
-  // Item de menu com seta de navegação
   Widget _itemMenu({
     required IconData icone,
     required Color corIcone,
@@ -285,7 +283,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
     );
   }
 
-  // Item de menu com Switch
   Widget _itemMenuSwitch({
     required IconData icone,
     required Color corIcone,
@@ -303,7 +300,6 @@ class _PerfilScreenState extends State<PerfilScreen> {
     );
   }
 
-  // Ícone dentro de um círculo colorido translúcido
   Widget _circuloIcone(IconData icone, Color cor) {
     return Container(
       width: 38,
@@ -328,5 +324,31 @@ class _PerfilScreenState extends State<PerfilScreen> {
         ),
       ],
     );
+  }
+
+  String _labelForGoal(String goal) {
+    switch (goal) {
+      case 'emagrecer':
+        return 'Emagrecer';
+      case 'ganhar_massa':
+        return 'Ganhar massa muscular';
+      case 'manter_peso':
+        return 'Manter peso';
+      default:
+        return goal;
+    }
+  }
+
+  String _labelForActivity(String activityLevel) {
+    switch (activityLevel) {
+      case 'sedentario':
+        return 'Sedentario';
+      case 'moderado':
+        return 'Moderado';
+      case 'ativo':
+        return 'Ativo';
+      default:
+        return activityLevel;
+    }
   }
 }

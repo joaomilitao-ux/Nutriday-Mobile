@@ -65,11 +65,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
+    final route = await _resolvePostLoginRoute(user);
+
     if (!mounted) {
       return;
     }
 
-    Navigator.pushReplacementNamed(context, AppRoutes.inicio);
+    Navigator.pushReplacementNamed(context, route);
   }
 
   Future<void> _loginWithEmailAndPassword() async {
@@ -90,11 +92,13 @@ class _LoginPageState extends State<LoginPage> {
       final user = await _ensureAuthorizedUser(credential);
       await _tryPersistUserAccess(user, provider: 'password');
 
+      final route = await _resolvePostLoginRoute(user);
+
       if (!mounted) {
         return;
       }
 
-      Navigator.pushReplacementNamed(context, AppRoutes.inicio);
+      Navigator.pushReplacementNamed(context, route);
     });
   }
 
@@ -172,6 +176,7 @@ class _LoginPageState extends State<LoginPage> {
 
     await FirebaseFirestore.instance.collection('usuarios').doc(user.uid).set({
       'uid': user.uid,
+      'usuario_uid': user.uid,
       'email': email,
       'usuario_logado': username,
       'criado_por': email,
@@ -179,6 +184,24 @@ class _LoginPageState extends State<LoginPage> {
       'ultimo_login_em': FieldValue.serverTimestamp(),
       'atualizado_em': FieldValue.serverTimestamp(),
     }, SetOptions(merge: true));
+  }
+
+  Future<String> _resolvePostLoginRoute(User user) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('usuarios')
+          .doc(user.uid)
+          .get();
+      final data = snapshot.data();
+      final onboardingDone = data?['onboarding_concluido'] == true;
+
+      return onboardingDone ? AppRoutes.inicio : AppRoutes.onboarding;
+    } on FirebaseException catch (error) {
+      debugPrint(
+        'Firestore onboarding check: plugin=${error.plugin}, code=${error.code}, message=${error.message}',
+      );
+      return AppRoutes.inicio;
+    }
   }
 
   Future<void> _signOutUnauthorizedUser() async {
