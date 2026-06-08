@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nutriday/services/refeicao_service.dart';
 
 class RegistrarRefeicaoScreen extends StatefulWidget {
   const RegistrarRefeicaoScreen({super.key});
@@ -23,6 +24,12 @@ class _RegistrarRefeicaoScreenState extends State<RegistrarRefeicaoScreen> {
   // Valor selecionado no dropdown
   String? _tipoRefeicao;
 
+  // Serviço de persistência da refeição no Firestore
+  final _refeicaoService = RefeicaoService();
+
+  // Estado de carregamento para evitar múltiplos cliques no botão salvar
+  bool _salvando = false;
+
   static const Color _verde = Color(0xFF4CAF50);
 
   static const List<String> _tiposRefeicao = [
@@ -45,15 +52,72 @@ class _RegistrarRefeicaoScreenState extends State<RegistrarRefeicaoScreen> {
     super.dispose();
   }
 
-  void _salvarRefeicao() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: implementar lógica de salvar
+  Future<void> _salvarRefeicao() async {
+    // Evita salvamentos duplicados enquanto uma escrita está em andamento
+    if (_salvando) {
+      return;
+    }
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    setState(() => _salvando = true);
+
+    try {
+      await _refeicaoService.salvarRefeicao(
+        nomeAlimento: _nomeController.text,
+        quantidade: _quantidadeController.text,
+        tipoRefeicao: _tipoRefeicao!,
+        calorias: _caloriasController.text,
+        proteinas: _proteinasController.text,
+        carboidratos: _carboidratosController.text,
+        gorduras: _gordurasController.text,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Refeição salva com sucesso!'),
           backgroundColor: _verde,
         ),
       );
+
+      // Limpa o formulário após salvar com sucesso
+      _formKey.currentState!.reset();
+      _nomeController.clear();
+      _quantidadeController.clear();
+      _caloriasController.clear();
+      _proteinasController.clear();
+      _carboidratosController.clear();
+      _gordurasController.clear();
+      setState(() => _tipoRefeicao = null);
+    } on UsuarioNaoLogadoException {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Você precisa estar logado para salvar uma refeição.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Não foi possível salvar a refeição. Tente novamente.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _salvando = false);
+      }
     }
   }
 
@@ -223,18 +287,29 @@ class _RegistrarRefeicaoScreenState extends State<RegistrarRefeicaoScreen> {
 
   Widget _botaoSalvar() {
     return ElevatedButton(
-      onPressed: _salvarRefeicao,
+      onPressed: _salvando ? null : _salvarRefeicao,
       style: ElevatedButton.styleFrom(
         backgroundColor: _verde,
         foregroundColor: Colors.white,
+        disabledBackgroundColor: _verde.withValues(alpha: 0.6),
+        disabledForegroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 0,
       ),
-      child: const Text(
-        'Salvar Refeição',
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-      ),
+      child: _salvando
+          ? const SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            )
+          : const Text(
+              'Salvar Refeição',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
     );
   }
 
@@ -287,7 +362,7 @@ class _RegistrarRefeicaoScreenState extends State<RegistrarRefeicaoScreen> {
       borderRadius: BorderRadius.circular(12),
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withOpacity(0.05),
+          color: Colors.black.withValues(alpha: 0.05),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
