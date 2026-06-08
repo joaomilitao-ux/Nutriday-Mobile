@@ -4,31 +4,31 @@
 
 ## Informações Gerais
 
-| Campo | Detalhe |
-|---|---|
-| Projeto | Nutriday |
+| Campo      | Detalhe             |
+| ---------- | ------------------- |
+| Projeto    | Nutriday            |
 | Disciplina | Dispositivos Móveis |
-| Período | 11/05 a 18/06 |
+| Período    | 11/05 a 18/06       |
 
 ---
 
 ## Tabela de Tarefas
 
-| # | Tarefa | Responsável | Status | Prazo | Observações |
-|---|---|---|---|---|---|
-| 1 | Tela de Login, Tela de Cadastro, Tela de Objetivo, Tela de Dados Físicos, Tela de Informações Pessoais e Tela de Nível de Atividade | João Miguel | 🟢 | 18/06 | Responsável pelo fluxo inicial do usuário no app | https://drive.google.com/file/d/10Kq6WZB7NglM2Gl081IPQhUySKUN2Ixj/view?usp=drivesdk |
-| 2 | Tela de perfil e Registro de refeições | Clara Helena | 🟢 | 18/06 | Responsável por desenvolver tela de perfil e registro de refeições | Perfil integrado ao FirebaseAuth e Firestore. Registro de refeições salvo no Firestore com vínculo ao usuário autenticado. |
-| 3 | Tela de refeiçoes e lista de compras | Mariana | 🟢 | 18/06 | Responsavel por desenvolver tela de refeiçao e lista de compras |
-| 4 | Tela Home e Histórico | João Vitor | 🟢 | 18/06 | Responsável pela tela Home e pelo Histórico do Usuário |
-| 5 |  | Allan | 🔵 |  |  |
+| # | Tarefa                                                                                                                              | Responsável  | Status | Prazo | Observações                                                                                                                                 |
+| - | ----------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | Tela de Login, Tela de Cadastro, Tela de Objetivo, Tela de Dados Físicos, Tela de Informações Pessoais e Tela de Nível de Atividade | João Miguel  | 🟢     | 18/06 | Responsável pelo fluxo inicial do usuário no app. Link: https://drive.google.com/file/d/10Kq6WZB7NglM2Gl081IPQhUySKUN2Ixj/view?usp=drivesdk |
+| 2 | Tela de Perfil e Registro de Refeições                                                                                              | Clara Helena | 🟢     | 18/06 | Perfil integrado ao FirebaseAuth e Firestore. Registro de refeições salvo no Firestore com vínculo ao usuário autenticado.                  |
+| 3 | Tela de Refeições e Lista de Compras                                                                                                | Mariana      | 🟢     | 18/06 | Responsável por desenvolver a tela de refeição e a lista de compras                                                                         |
+| 4 | Tela Home e Histórico                                                                                                               | João Vitor   | 🟢     | 18/06 | Responsável pela tela Home e pelo histórico do usuário                                                                                      |
+| 5 | A definir                                                                                                                           | Allan        | 🔵     | 18/06 | Tarefa ainda não definida                                                                                                                   |
 
 ---
 
 ## Legenda de Status
 
-| Ícone | Significado |
-|---|---|
-| 🔵 | A fazer |
-| 🟡 | Em andamento |
-| 🟢 | Concluído |
-| 🔴 | Bloqueado |
+| Ícone | Significado  |
+| ----- | ------------ |
+| 🔵    | A fazer      |
+| 🟡    | Em andamento |
+| 🟢    | Concluído    |
+| 🔴    | Bloqueado    |
